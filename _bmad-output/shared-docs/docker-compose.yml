@@ -1,0 +1,45 @@
+# Docker Compose for local development — MfgStructure Service
+# Run: docker compose up -d
+
+services:
+  # === PostgreSQL 18 ===
+  postgres:
+    image: postgres:18
+    container_name: mfgstructure-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: mfgstructure_dev
+    volumes:
+      - mfgstructure_pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d mfgstructure_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # === Redis 8 (Dapr State Store + Pub/Sub) ===
+  redis:
+    image: redis:8-alpine
+    container_name: mfgstructure-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # === Dapr Placement Service ===
+  dapr-placement:
+    image: "daprio/dapr:1.16.9"
+    container_name: mfgstructure-dapr-placement
+    command: ["./placement", "-port", "50006"]
+    ports:
+      - "50006:50006"
+
+volumes:
+  mfgstructure_pgdata:
+    driver: local

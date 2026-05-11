@@ -1,0 +1,5 @@
+# Local development overrides
+services:
+  postgres:
+    environment:
+      POSTGRES_INITDB_ARGS: "--auth-host=trust"

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UX Design Directions — Maestro de Métodos</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: { 50:'#f7fcff',100:'#dbeefe',200:'#bfe2fe',300:'#93d1fd',400:'#60b6fa',500:'#3c9bf6',600:'#0e79fd',700:'#0f6ae3',800:'#1355b7',900:'#154990',950:'#112d57' },
+          tertiary: { 50:'#eef8ff',100:'#d9efff',200:'#bce4ff',300:'#8ed4ff',400:'#58bbff',500:'#329cff',600:'#1b7df5',700:'#1465e1',800:'#154ca9',900:'#19478f',950:'#051938' }
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+  .direction-panel { display: none; }
+  .direction-panel.active { display: block; }
+  .tab-btn { transition: all 0.2s; }
+  .tab-btn.active { background: #0e79fd; color: white; }
+  .inherited-field { background: #f8fafc; border-color: #e2e8f0; }
+  .inherited-badge { background: #f1f5f9; color: #64748b; font-size: 11px; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+  .override-badge { background: #dbeefe; color: #0e79fd; font-size: 11px; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+  .seed-badge { background: #fef3c7; color: #92400e; font-size: 11px; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+  .scope-global { background: #f8fafc; border: 1px solid #e2e8f0; }
+  .scope-company { background: #eff6ff; border: 1px solid #bfdbfe; }
+  select, input[type=text], textarea { outline: none; }
+  select:focus, input:focus, textarea:focus { border-color: #0e79fd; box-shadow: 0 0 0 2px rgba(14,121,253,0.15); }
+</style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+<!-- Header -->
+<div class="bg-white border-b border-slate-200 px-6 py-4 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-xl font-bold text-slate-900">Direcciones de Diseño — Maestro de Métodos</h1>
+    <p class="text-sm text-slate-500 mt-1">4 variaciones explorando el selector de contexto Global/Empresa y campos heredados</p>
+    <div class="flex gap-2 mt-3 flex-wrap">
+      <button onclick="showDirection(1)" id="tab-1" class="tab-btn active px-4 py-1.5 rounded-full text-sm font-medium border border-primary-600">
+        Dir. 1 — Selector en Header
+      </button>
+      <button onclick="showDirection(2)" id="tab-2" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium border border-slate-300 text-slate-600">
+        Dir. 2 — Panel Lateral
+      </button>
+      <button onclick="showDirection(3)" id="tab-3" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium border border-slate-300 text-slate-600">
+        Dir. 3 — Tabs de Contexto
+      </button>
+      <button onclick="showDirection(4)" id="tab-4" class="tab-btn px-4 py-1.5 rounded-full text-sm font-medium border border-slate-300 text-slate-600">
+        Dir. 4 — Vista Dividida
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DIRECTION 1 ===================== -->
+<div id="dir-1" class="direction-panel active">
+  <div class="max-w-7xl mx-auto p-6 space-y-6">
+    <div class="bg-white rounded-lg border border-slate-200 p-4">
+      <span class="text-xs font-semibold text-primary-600 uppercase tracking-wider">Direccion 1</span>
+      <h2 class="text-base font-bold text-slate-800 mt-1">Selector de contexto en el header del formulario</h2>
+      <p class="text-sm text-slate-500 mt-1">El selector Global/Empresa vive dentro del card del formulario, junto al título. El contexto activo cambia el fondo del formulario sutilmente. Campos heredados muestran el valor global en gris con badge "Heredado".</p>
+    </div>
+
+    <!-- LIST VIEW -->
+    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <!-- Header con título, context pill y botón crear -->
+      <div class="px-5 pt-4 pb-2 border-b border-slate-100 flex items-start justify-between">
+        <div>
+          <h2 class="text-base font-semibold text-slate-900">Maestro de Métodos</h2>
+          <!-- Context pill — patrón MasterCrud de siesa-ui-kit -->
+          <div class="relative mt-1" style="display:inline-block;">
+            <button onclick="toggleCtxDropdown()" style="background:#f3f0ff;color:#6d28d9;border:1px solid #ddd6fe;border-radius:9999px;padding:2px 10px 2px 8px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;">
+              <svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
+              Global
+              <svg style="width:11px;height:11px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <!-- Dropdown -->
+            <div id="ctx-dropdown" style="display:none;position:absolute;top:28px;left:0;background:white;border:1px solid #e2e8f0;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:100;min-width:220px;padding:4px 0;">
+              <div style="padding:6px 14px;cursor:pointer;background:#f5f3ff;" onclick="selectCtx(this,'global')">
+                <div style="font-size:13px;font-weight:600;color:#4c1d95;">Global</div>
+                <div style="font-size:11px;color:#7c3aed;">CÓDIGO: 000</div>
+              </div>
+              <div style="padding:6px 14px;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="selectCtx(this,'emp1')">
+                <div style="font-size:13px;font-weight:600;color:#1e293b;">Siesa Principal SAS</div>
+                <div style="font-size:11px;color:#64748b;">CÓDIGO: 001</div>
+              </div>
+              <div style="padding:6px 14px;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="selectCtx(this,'emp2')">
+                <div style="font-size:13px;font-weight:600;color:#1e293b;">Siesa Regional Medellín</div>
+                <div style="font-size:11px;color:#64748b;">CÓDIGO: 002</div>
+              </div>
+              <div style="padding:6px 14px;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="selectCtx(this,'emp3')">
+                <div style="font-size:13px;font-weight:600;color:#1e293b;">Empresa B — Subsidiaria</div>
+                <div style="font-size:11px;color:#64748b;">CÓDIGO: 003</div>
+              </div>
+              <div style="padding:6px 14px;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="selectCtx(this,'emp4')">
+                <div style="font-size:13px;font-weight:600;color:#1e293b;">Empresa C — Norte</div>
+                <div style="font-size:11px;color:#64748b;">CÓDIGO: 004</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button style="background:#0e79fd;color:white;border-radius:6px;padding:7px 16px;font-size:14px;font-weight:500;border:none;cursor:pointer;">+ Crear Método</button>
+      </div>
+      <!-- Toolbar -->
+      <div class="px-5 py-3 border-b border-slate-100 flex gap-3 items-center bg-slate-50 flex-wrap">
+        <input type="text" placeholder="Buscar por código o nombre..." class="border border-slate-300 rounded-md px-3 py-1.5 text-sm w-56">
+        <select class="border border-slate-300 rounded-md px-3 py-1.5 text-sm text-slate-600 bg-white">
+          <option>Tipo de Uso: Todos</option>
+          <option>Manufactura y Costo</option>
+          <option>Solo Manufactura</option>
+          <option>Solo Costo</option>
+        </select>
+        <select class="border border-slate-300 rounded-md px-3 py-1.5 text-sm text-slate-600 bg-white">
+          <option>Estado: Todos</option>
+          <option>Activo</option>
+          <option>Inactivo</option>
+        </select>
+      </div>
+      <!-- Table -->
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50 border-b border-slate-200">
+          <tr>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Código</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nombre</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tipo de Uso</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+            <th class="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          <tr class="hover:bg-slate-50">
+            <td class="px-5 py-3 font-mono text-slate-700">0001</td>
+            <td class="px-5 py-3 text-slate-900 font-medium">Estándar <span class="seed-badge ml-2">Sistema</span></td>
+            <td class="px-5 py-3 text-slate-600">Manufactura y Costo</td>
+            <td class="px-5 py-3"><span class="bg-green-50 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-full">Activo</span></td>
+            <td class="px-5 py-3 text-right">
+              <button class="text-slate-400 hover:text-slate-600 p-1" title="Ver">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+              <button class="text-slate-400 hover:text-primary-600 p-1" title="Asignar empresa">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+              </button>
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-50 bg-primary-50/30">
+            <td class="px-5 py-3 font-mono text-slate-700">0002</td>
+            <td class="px-5 py-3 text-slate-900 font-medium">Alterno</td>
+            <td class="px-5 py-3 text-slate-600">Manufactura y Costo</td>
+            <td class="px-5 py-3"><span class="bg-green-50 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-full">Activo</span></td>
+            <td class="px-5 py-3 text-right flex justify-end gap-1">
+              <button class="text-slate-400 hover:text-slate-600 p-1" title="Ver">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+              <button class="text-primary-600 hover:text-primary-800 p-1" title="Editar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              </button>
+              <button class="text-slate-400 hover:text-primary-600 p-1" title="Asignar empresa">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+              </button>
+              <button class="text-slate-400 hover:text-red-500 p-1" title="Eliminar">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="px-5 py-3 font-mono text-slate-700">0003</td>
+            <td class="px-5 py-3 text-slate-900 font-medium">Prototipo</td>
+            <td class="px-5 py-3 text-slate-600">Solo Manufactura</td>
+            <td class="px-5 py-3"><span class="bg-red-50 text-red-600 text-xs font-semibold px-2 py-0.5 rounded-full">Inactivo</span></td>
+            <td class="px-5 py-3 text-right flex justify-end gap-1">
+              <button class="text-slate-400 hover:text-slate-600 p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+              <button class="text-primary-600 hover:text-primary-800 p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+              <button class="text-slate-400 hover:text-primary-600 p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></button>
+              <button class="text-slate-400 hover:text-red-500 p-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="px-5 py-3 border-t border-slate-100 flex items-center justify-between text-sm text-slate-500">
+        <span>Mostrando 1–3 de 3 registros</span>
+        <div class="flex items-center gap-2">
+          <select class="border border-slate-200 rounded px-2 py-1 text-xs bg-white">
+            <option>10 por página</option><option>20 por página</option><option>50 por página</option>
+          </select>
+          <button class="px-2 py-1 rounded border border-slate-200 text-xs hover:bg-slate-50">&lt;</button>
+          <button class="px-2 py-1 rounded border border-primary-600 bg-primary-600 text-white text-xs">1</button>
+          <button class="px-2 py-1 rounded border border-slate-200 text-xs hover:bg-slate-50">&gt;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM — Company context -->
+    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div class="px-5 pt-4 pb-2 border-b border-slate-100">
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900">Editar Método — Alterno (0002)</h3>
+            <!-- Context pill — mismo patrón que la lista -->
+            <div class="relative mt-1" style="display:inline-block;">
+              <button onclick="toggleFormCtxDropdown()" style="background:#f3f0ff;color:#6d28d9;border:1px solid #ddd6fe;border-radius:9999px;padding:2px 10px 2px 8px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px;">
+                <svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>
+                Empresa B — Subsidiaria
+                <svg style="width:11px;height:11px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div id="form-ctx-dropdown" style="display:none;position:absolute;top:28px;left:0;background:white;border:1px solid #e2e8f0;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.10);z-index:100;min-width:220px;padding:4px 0;">
+                <div style="padding:6px 14px;cursor:pointer;" onmouseover="this.style.background='#f5f3ff'" onmouseout="this.style.background=''" onclick="selectFormCtx(this,'global')">
+                  <div style="font-size:13px;font-weight:600;color:#4c1d95;">Global</div>
+                  <div style="font-size:11px;color:#7c3aed;">CÓDIGO: 000</div>
+                </div>
+                <div style="padding:6px 14px;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="selectFormCtx(this,'emp1')">
+                  <div style="font-size:13px;font-weight:600;color:#1e293b;">Siesa Principal SAS</div>
+                  <div style="font-size:11px;color:#64748b;">CÓDIGO: 001</div>
+                </div>
+                <div style="padding:6px 14px;cursor:pointer;background:#f5f3ff;" onclick="selectFormCtx(this,'emp3')">
+                  <div style="font-size:13px;font-weight:600;color:#4c1d95;">Empresa B — Subsidiaria</div>
+                  <div style="font-size:11px;color:#7c3aed;">CÓDIGO: 003</div>
+                </div>
+                <div style="padding:6px 14px;cursor:pointer;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''" onclick="selectFormCtx(this,'emp4')">
+                  <div style="font-size:13px;font-weight:600;color:#1e293b;">Empresa C — Norte</div>
+                  <div style="font-size:11px;color:#64748b;">CÓDIGO: 004</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-5 grid grid-cols-2 gap-5">
+        <!-- Codigo — inmutable -->
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">Código <span class="text-slate-400 font-normal">(inmutable)</span></label>
+          <p class="text-sm font-mono text-slate-600 bg-slate-50 border border-slate-200 rounded-md px-3 py-2">0002</p>
+        </div>
+        <!-- Nombre — inmutable -->
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">Nombre <span class="text-slate-400 font-normal">(inmutable)</span></label>
+          <p class="text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-md px-3 py-2">Alterno</p>
+        </div>
+        <!-- Descripcion — heredado -->
+        <div class="col-span-2">
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-medium text-slate-700">Descripción</label>
+            <span class="inherited-badge">Heredado</span>
+          </div>
+          <textarea rows="2" class="inherited-field w-full border rounded-md px-3 py-2 text-sm text-slate-400 resize-none" placeholder="Método para producción alternativa (valor global)"></textarea>
+          <p class="text-xs text-slate-400 mt-1">Editando este campo se creará un override para Empresa B</p>
+        </div>
+        <!-- Tipo Uso — override activo -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-medium text-slate-700">Tipo de Uso</label>
+            <span class="override-badge">Personalizado</span>
+          </div>
+          <select class="w-full border border-primary-300 rounded-md px-3 py-2 text-sm bg-white text-slate-800">
+            <option>Manufactura y Costo</option>
+            <option selected>Solo Costo</option>
+            <option>Solo Manufactura</option>
+          </select>
+          <button class="text-xs text-slate-400 hover:text-slate-600 mt-1 flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Restablecer al valor global
+          </button>
+        </div>
+        <!-- Estado — heredado -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-medium text-slate-700">Estado</label>
+            <span class="inherited-badge">Heredado</span>
+          </div>
+          <select class="inherited-field w-full border rounded-md px-3 py-2 text-sm text-slate-400 bg-slate-50">
+            <option selected>Activo (valor global)</option>
+            <option>Inactivo</option>
+          </select>
+        </div>
+      </div>
+      <div class="px-5 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+        <button class="text-sm text-slate-500 hover:text-slate-700">Cancelar</button>
+        <button class="bg-primary-600 text-white text-sm px-5 py-2 rounded-md font-medium hover:bg-primary-700">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DIRECTION 2 ===================== -->
+<div id="dir-2" class="direction-panel">
+  <div class="max-w-7xl mx-auto p-6">
+    <div class="bg-white rounded-lg border border-slate-200 p-4 mb-6">
+      <span class="text-xs font-semibold text-primary-600 uppercase tracking-wider">Direccion 2</span>
+      <h2 class="text-base font-bold text-slate-800 mt-1">Panel lateral de contexto</h2>
+      <p class="text-sm text-slate-500 mt-1">El formulario tiene un panel lateral fijo que muestra el contexto activo y la lista de empresas asignadas. El usuario selecciona la empresa desde el panel. Los campos del formulario reflejan el estado de la empresa seleccionada.</p>
+    </div>
+
+    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden flex" style="min-height:520px">
+      <!-- Sidebar -->
+      <div class="w-56 border-r border-slate-200 flex-shrink-0 bg-slate-50">
+        <div class="p-4 border-b border-slate-200">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Contexto</p>
+          <button class="w-full text-left px-3 py-2 rounded-md text-sm bg-slate-200 text-slate-700 font-medium mb-1 flex items-center gap-2">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
+            Global
+          </button>
+        </div>
+        <div class="p-4">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Empresas asignadas</p>
+          <div class="space-y-1">
+            <button class="w-full text-left px-3 py-2 rounded-md text-sm bg-primary-600 text-white font-medium flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
+              Empresa A
+            </button>
+            <button class="w-full text-left px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
+              Empresa B
+            </button>
+            <button class="w-full text-left px-3 py-2 rounded-md text-sm text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
+              Empresa C — Norte
+            </button>
+          </div>
+          <button class="mt-4 w-full text-xs text-primary-600 hover:text-primary-800 font-medium flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Asignar empresa
+          </button>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="flex-1">
+        <div class="px-6 py-4 border-b border-slate-100 bg-primary-50">
+          <div class="flex items-center gap-2">
+            <span class="bg-primary-600 text-white text-xs font-bold px-2 py-0.5 rounded">Empresa A</span>
+            <h3 class="text-base font-semibold text-slate-900">Alterno (0002)</h3>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Editando configuración para Empresa A. Los campos grises se heredan del registro global.</p>
+        </div>
+        <div class="p-6 grid grid-cols-2 gap-5">
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">Código</label>
+            <p class="text-sm font-mono text-slate-500 bg-slate-50 border border-slate-200 rounded-md px-3 py-2">0002</p>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-500 mb-1">Nombre</label>
+            <p class="text-sm text-slate-500 bg-slate-50 border border-slate-200 rounded-md px-3 py-2">Alterno</p>
+          </div>
+          <div class="col-span-2">
+            <div class="flex justify-between mb-1">
+              <label class="text-xs font-medium text-slate-700">Descripción</label>
+              <span class="override-badge">Personalizado — Empresa A</span>
+            </div>
+            <textarea rows="2" class="w-full border border-primary-200 rounded-md px-3 py-2 text-sm text-slate-800 bg-white resize-none">Método alternativo para línea especial de Empresa A</textarea>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <label class="text-xs font-medium text-slate-700">Tipo de Uso</label>
+              <span class="inherited-badge">Heredado</span>
+            </div>
+            <select class="inherited-field w-full border rounded-md px-3 py-2 text-sm text-slate-400">
+              <option selected>Manufactura y Costo (global)</option>
+            </select>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <label class="text-xs font-medium text-slate-700">Estado</label>
+              <span class="inherited-badge">Heredado</span>
+            </div>
+            <select class="inherited-field w-full border rounded-md px-3 py-2 text-sm text-slate-400">
+              <option selected>Activo (global)</option>
+            </select>
+          </div>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between">
+          <button class="text-sm text-slate-500">Cancelar</button>
+          <button class="bg-primary-600 text-white text-sm px-5 py-2 rounded-md font-medium">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DIRECTION 3 ===================== -->
+<div id="dir-3" class="direction-panel">
+  <div class="max-w-7xl mx-auto p-6">
+    <div class="bg-white rounded-lg border border-slate-200 p-4 mb-6">
+      <span class="text-xs font-semibold text-primary-600 uppercase tracking-wider">Direccion 3</span>
+      <h2 class="text-base font-bold text-slate-800 mt-1">Tabs de contexto (Global / Empresa)</h2>
+      <p class="text-sm text-slate-500 mt-1">El formulario usa un sistema de tabs: el primer tab muestra los campos globales, los siguientes tabs muestran el override de cada empresa asignada. Cada tab indica visualmente si tiene overrides activos.</p>
+    </div>
+
+    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100">
+        <h3 class="text-base font-semibold text-slate-900">Editar Método — Alterno (0002)</h3>
+      </div>
+      <!-- Tabs -->
+      <div class="border-b border-slate-200 flex px-5 gap-0 bg-slate-50 overflow-x-auto">
+        <button class="px-4 py-3 text-sm font-medium text-slate-500 hover:text-slate-800 border-b-2 border-transparent hover:border-slate-300 flex items-center gap-2 whitespace-nowrap">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064"/></svg>
+          Global
+        </button>
+        <button class="px-4 py-3 text-sm font-medium text-primary-700 border-b-2 border-primary-600 flex items-center gap-2 whitespace-nowrap">
+          Empresa A
+          <span class="bg-primary-100 text-primary-700 text-xs px-1.5 py-0.5 rounded-full font-semibold">2</span>
+        </button>
+        <button class="px-4 py-3 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:border-slate-300 flex items-center gap-2 whitespace-nowrap">
+          Empresa B
+          <span class="bg-slate-100 text-slate-400 text-xs px-1.5 py-0.5 rounded-full">—</span>
+        </button>
+        <button class="px-4 py-3 text-sm font-medium text-slate-500 border-b-2 border-transparent hover:border-slate-300 flex items-center gap-2 whitespace-nowrap">
+          Empresa C — Norte
+          <span class="bg-amber-100 text-amber-600 text-xs px-1.5 py-0.5 rounded-full font-semibold">1</span>
+        </button>
+        <button class="px-4 py-3 text-sm text-primary-500 hover:text-primary-700 flex items-center gap-1 whitespace-nowrap ml-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Asignar empresa
+        </button>
+      </div>
+      <!-- Tab content — Empresa A -->
+      <div class="p-5 grid grid-cols-2 gap-5">
+        <div class="col-span-2 bg-primary-50 border border-primary-100 rounded-md px-4 py-3 flex items-start gap-3">
+          <svg class="w-4 h-4 text-primary-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p class="text-xs text-primary-800">Estás editando la configuración de <strong>Empresa A</strong>. Los campos sin personalización heredan el valor del registro global. El número en el tab indica cuántos campos tienen overrides activos.</p>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">Código (global — inmutable)</label>
+          <p class="text-sm font-mono text-slate-400 bg-slate-50 border border-slate-200 rounded-md px-3 py-2">0002</p>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-500 mb-1">Nombre (global — inmutable)</label>
+          <p class="text-sm text-slate-400 bg-slate-50 border border-slate-200 rounded-md px-3 py-2">Alterno</p>
+        </div>
+        <div class="col-span-2">
+          <div class="flex justify-between mb-1">
+            <label class="text-xs font-medium text-slate-700">Descripción <span class="override-badge ml-1">Override activo</span></label>
+          </div>
+          <textarea rows="2" class="w-full border border-primary-300 rounded-md px-3 py-2 text-sm text-slate-800 bg-white resize-none">Método alternativo para línea especial de Empresa A</textarea>
+          <button class="text-xs text-slate-400 hover:text-red-500 mt-1 flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            Eliminar override — volver a heredar
+          </button>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1">
+            <label class="text-xs font-medium text-slate-700">Tipo de Uso <span class="override-badge ml-1">Override activo</span></label>
+          </div>
+          <select class="w-full border border-primary-300 rounded-md px-3 py-2 text-sm bg-white text-slate-800">
+            <option>Manufactura y Costo</option>
+            <option selected>Solo Costo</option>
+          </select>
+          <button class="text-xs text-slate-400 hover:text-red-500 mt-1 flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            Eliminar override — volver a heredar
+          </button>
+        </div>
+        <div>
+          <div class="flex justify-between mb-1">
+            <label class="text-xs font-medium text-slate-700">Estado</label>
+            <span class="inherited-badge">Heredado del global</span>
+          </div>
+          <select class="inherited-field w-full border rounded-md px-3 py-2 text-sm text-slate-400">
+            <option selected>Activo (global)</option>
+            <option>Inactivo</option>
+          </select>
+          <p class="text-xs text-slate-400 mt-1">Selecciona un valor para crear un override para esta empresa</p>
+        </div>
+      </div>
+      <div class="px-5 py-4 border-t border-slate-100 bg-slate-50 flex justify-between">
+        <button class="text-sm text-slate-500">Cancelar</button>
+        <button class="bg-primary-600 text-white text-sm px-5 py-2 rounded-md font-medium">Guardar cambios para Empresa A</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DIRECTION 4 ===================== -->
+<div id="dir-4" class="direction-panel">
+  <div class="max-w-7xl mx-auto p-6">
+    <div class="bg-white rounded-lg border border-slate-200 p-4 mb-6">
+      <span class="text-xs font-semibold text-primary-600 uppercase tracking-wider">Direccion 4</span>
+      <h2 class="text-base font-bold text-slate-800 mt-1">Vista dividida — Global y Empresa en paralelo</h2>
+      <p class="text-sm text-slate-500 mt-1">El formulario muestra dos columnas: izquierda = valores globales (siempre visibles como referencia), derecha = valores de la empresa seleccionada. El usuario puede ver la diferencia de un vistazo sin cambiar de contexto.</p>
+    </div>
+
+    <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-base font-semibold text-slate-900">Editar Método — Alterno (0002)</h3>
+        <div class="flex items-center gap-2">
+          <label class="text-xs text-slate-500">Empresa:</label>
+          <select class="border border-slate-300 rounded-md px-3 py-1.5 text-sm bg-white text-slate-800">
+            <option>Empresa A</option>
+            <option selected>Empresa B — Subsidiaria</option>
+          </select>
+        </div>
+      </div>
+      <!-- Split header -->
+      <div class="grid grid-cols-2 border-b border-slate-200">
+        <div class="px-5 py-3 bg-slate-50 border-r border-slate-200">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945"/></svg>
+            Valores Globales (referencia — solo lectura)
+          </p>
+        </div>
+        <div class="px-5 py-3 bg-primary-50">
+          <p class="text-xs font-semibold text-primary-700 uppercase tracking-wider flex items-center gap-2">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>
+            Empresa B — Configuración local
+          </p>
+        </div>
+      </div>
+      <!-- Fields split -->
+      <div class="divide-y divide-slate-100">
+        <div class="grid grid-cols-2">
+          <div class="px-5 py-3 border-r border-slate-200 bg-slate-50 flex items-center">
+            <div class="w-full">
+              <label class="text-xs text-slate-400">Código</label>
+              <p class="text-sm font-mono text-slate-500 mt-0.5">0002</p>
+            </div>
+          </div>
+          <div class="px-5 py-3 bg-white flex items-center">
+            <div class="w-full">
+              <label class="text-xs text-slate-400">Código (inmutable)</label>
+              <p class="text-sm font-mono text-slate-400 mt-0.5">0002</p>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2">
+          <div class="px-5 py-3 border-r border-slate-200 bg-slate-50">
+            <label class="text-xs text-slate-400">Nombre</label>
+            <p class="text-sm text-slate-600 mt-0.5">Alterno</p>
+          </div>
+          <div class="px-5 py-3 bg-white">
+            <label class="text-xs text-slate-400">Nombre (inmutable)</label>
+            <p class="text-sm text-slate-400 mt-0.5">Alterno</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2">
+          <div class="px-5 py-3 border-r border-slate-200 bg-slate-50">
+            <label class="text-xs text-slate-400">Descripción (global)</label>
+            <p class="text-sm text-slate-600 mt-0.5 italic">Método para producción alternativa</p>
+          </div>
+          <div class="px-5 py-3 bg-primary-50/30">
+            <div class="flex justify-between">
+              <label class="text-xs text-slate-600 font-medium">Descripción <span class="override-badge ml-1">Override</span></label>
+            </div>
+            <textarea rows="1" class="w-full mt-1 border border-primary-200 rounded px-2 py-1.5 text-sm text-slate-800 bg-white resize-none">Descripción personalizada para Empresa B</textarea>
+          </div>
+        </div>
+        <div class="grid grid-cols-2">
+          <div class="px-5 py-3 border-r border-slate-200 bg-slate-50">
+            <label class="text-xs text-slate-400">Tipo de Uso (global)</label>
+            <p class="text-sm text-slate-600 mt-0.5">Manufactura y Costo</p>
+          </div>
+          <div class="px-5 py-3">
+            <label class="text-xs text-slate-600 font-medium">Tipo de Uso <span class="inherited-badge ml-1">Heredado</span></label>
+            <select class="inherited-field w-full mt-1 border rounded px-2 py-1.5 text-sm text-slate-400">
+              <option selected>Manufactura y Costo (global)</option>
+              <option>Solo Manufactura</option>
+              <option>Solo Costo</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2">
+          <div class="px-5 py-3 border-r border-slate-200 bg-slate-50">
+            <label class="text-xs text-slate-400">Estado (global)</label>
+            <p class="text-sm mt-0.5"><span class="bg-green-50 text-green-700 text-xs font-semibold px-2 py-0.5 rounded-full">Activo</span></p>
+          </div>
+          <div class="px-5 py-3 bg-primary-50/30">
+            <div class="flex justify-between">
+              <label class="text-xs text-slate-600 font-medium">Estado <span class="override-badge ml-1">Override</span></label>
+            </div>
+            <select class="w-full mt-1 border border-primary-200 rounded px-2 py-1.5 text-sm bg-white text-slate-800">
+              <option>Activo</option>
+              <option selected>Inactivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="px-5 py-4 border-t border-slate-100 bg-slate-50 flex justify-between">
+        <button class="text-sm text-slate-500">Cancelar</button>
+        <button class="bg-primary-600 text-white text-sm px-5 py-2 rounded-md font-medium">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Comparison bar -->
+<div class="max-w-7xl mx-auto px-6 pb-8 mt-4">
+  <div class="bg-white rounded-lg border border-slate-200 p-5">
+    <h3 class="text-sm font-semibold text-slate-700 mb-3">Comparativa de direcciones</h3>
+    <div class="grid grid-cols-4 gap-4 text-xs text-slate-600">
+      <div>
+        <p class="font-semibold text-slate-800 mb-1">Dir. 1 — Selector en Header</p>
+        <p class="text-green-700 font-medium">+ Simple, familiar para ERP</p>
+        <p class="text-green-700 font-medium">+ Formulario limpio</p>
+        <p class="text-slate-500">— Selector puede pasarse por alto</p>
+      </div>
+      <div>
+        <p class="font-semibold text-slate-800 mb-1">Dir. 2 — Panel Lateral</p>
+        <p class="text-green-700 font-medium">+ Todas las empresas visibles</p>
+        <p class="text-green-700 font-medium">+ Navegación rápida entre empresas</p>
+        <p class="text-slate-500">— Consume espacio horizontal</p>
+      </div>
+      <div>
+        <p class="font-semibold text-slate-800 mb-1">Dir. 3 — Tabs de Contexto</p>
+        <p class="text-green-700 font-medium">+ Badge muestra overrides activos</p>
+        <p class="text-green-700 font-medium">+ Patrón familiar (tabs)</p>
+        <p class="text-slate-500">— Muchas empresas = tabs largos</p>
+      </div>
+      <div>
+        <p class="font-semibold text-slate-800 mb-1">Dir. 4 — Vista Dividida</p>
+        <p class="text-green-700 font-medium">+ Global y empresa en paralelo</p>
+        <p class="text-green-700 font-medium">+ Diferencias visibles de un vistazo</p>
+        <p class="text-slate-500">— Más complejo, mayor espacio</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleFormCtxDropdown() {
+    const d = document.getElementById('form-ctx-dropdown');
+    d.style.display = d.style.display === 'none' ? 'block' : 'none';
+  }
+  function selectFormCtx(el, val) {
+    const btn = el.closest('.relative').querySelector('button');
+    const name = val === 'global' ? 'Global' : el.querySelector('div').innerText;
+    const isGlobal = val === 'global';
+    const icon = isGlobal
+      ? '<svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064"/></svg>'
+      : '<svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>';
+    btn.innerHTML = icon + name + '<svg style="width:11px;height:11px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>';
+    document.getElementById('form-ctx-dropdown').style.display = 'none';
+  }
+  document.addEventListener('click', function(e) {
+    const formRel = document.querySelector('#dir-1 #form-ctx-dropdown');
+    if (formRel && !formRel.closest('.relative').contains(e.target)) formRel.style.display = 'none';
+  });
+
+  function toggleCtxDropdown() {
+    const d = document.getElementById('ctx-dropdown');
+    d.style.display = d.style.display === 'none' ? 'block' : 'none';
+  }
+  function selectCtx(el, val) {
+    const btn = el.closest('.relative').querySelector('button');
+    const name = val === 'global' ? 'Global' : el.querySelector('div').innerText;
+    const icon = val === 'global'
+      ? '<svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064"/></svg>'
+      : '<svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/></svg>';
+    btn.innerHTML = icon + name + '<svg style="width:11px;height:11px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>';
+    document.getElementById('ctx-dropdown').style.display = 'none';
+  }
+  document.addEventListener('click', function(e) {
+    const rel = document.querySelector('#dir-1 .relative');
+    if (rel && !rel.contains(e.target)) document.getElementById('ctx-dropdown').style.display = 'none';
+  });
+
+  function showDirection(n) {
+    for(let i=1;i<=4;i++){
+      document.getElementById('dir-'+i).classList.remove('active');
+      document.getElementById('tab-'+i).classList.remove('active');
+      document.getElementById('tab-'+i).classList.add('text-slate-600','border-slate-300');
+      document.getElementById('tab-'+i).classList.remove('border-primary-600');
+    }
+    document.getElementById('dir-'+n).classList.add('active');
+    document.getElementById('tab-'+n).classList.add('active');
+    document.getElementById('tab-'+n).classList.remove('text-slate-600','border-slate-300');
+  }
+</script>
+</body>
+</html>
