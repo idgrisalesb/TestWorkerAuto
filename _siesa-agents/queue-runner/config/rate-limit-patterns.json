@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "patterns": [
+    { "id": "claude_usage_limit", "re": "claude.{0,5}usage.{0,5}limit.{0,5}reached",          "category": "plan_exhaustion" },
+    { "id": "rate_limit_error",   "re": "rate[_ -]?limit[_ -]?error",                          "category": "transient" },
+    { "id": "too_many_requests",  "re": "too\\s+many\\s+requests",                             "category": "transient" },
+    { "id": "temp_limiting",      "re": "(server|api)\\s+is\\s+temporarily\\s+limiting",       "category": "transient" },
+    { "id": "credit_low",         "re": "credit\\s+balance\\s+is\\s+too\\s+low",               "category": "billing_block" },
+    { "id": "try_again_in",       "re": "try\\s+again\\s+in\\s+(\\d+)\\s*(s|sec|second|m|min|minute|h|hour)", "category": "transient", "extract": "duration" },
+    { "id": "reset_at_epoch",     "re": "(?:reset|resets)(?:_at|sAt)?[\"':\\s]+(\\d{10,13})", "category": "any",       "extract": "epoch" },
+    { "id": "overloaded_529",     "re": "(?:HTTP|status)\\s*5(?:29|03)",                      "category": "transient" }
+  ]
+}

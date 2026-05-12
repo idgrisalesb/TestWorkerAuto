@@ -1,0 +1,10 @@
+description = "BMAD BMM Workflow: create-prd"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND IN THIS EXACT ORDER:
+
+1. FIRST, LOAD and READ the FULL contents of the custom extension file at: `_siesa-agents/bmm/workflows/2-plan-workflows/prd/workflow_ext.md`. You MUST assimilate these pre-requisites (especially asking for the feature list for sharding) before doing anything else.
+
+2. SECOND, LOAD the FULL standard workflow at: `@_bmad/bmm/workflows/2-plan-workflows/prd/workflow.md` and READ its entire contents.
+
+3. FINALLY, execute the standard workflow directions exactly, but STRICTLY APPLYING the rules, overrides, and steps defined in the `workflow_ext.md` file you read in step 1!
+"""

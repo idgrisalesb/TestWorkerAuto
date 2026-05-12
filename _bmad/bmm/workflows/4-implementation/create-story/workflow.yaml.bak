@@ -1,0 +1,63 @@
+name: Create Story
+description: This workflow guides the creation of a user story, ensuring it's well-defined and ready for development.
+entry_point: step-01-init
+steps:
+  - id: step-01-init
+    type: instruction
+    description: >
+      Welcome to the Story Creation Workflow! This workflow will help you define a clear and actionable user story.
+      Let's start by gathering some initial information.
+    next: step-02-gather-requirements
+  - id: step-02-gather-requirements
+    type: form
+    fields:
+      - name: story_title
+        label: Story Title
+        type: text
+        required: true
+      - name: as_a
+        label: As a...
+        type: text
+        required: true
+      - name: i_want
+        label: I want...
+        type: text
+        required: true
+      - name: so_that
+        label: So that...
+        type: text
+        required: true
+    next: step-03-acceptance-criteria
+  - id: step-03-acceptance-criteria
+    type: instruction
+    description: >
+      Now, let's define the acceptance criteria for this story. These criteria will help the developers understand
+      when the story is complete.  Please list at least three acceptance criteria.
+    next: step-04-story-points
+  - id: step-04-story-points
+    type: number
+    label: Story Points (Estimate of effort)
+    min: 1
+    max: 13
+    next: step-05-review
+  - id: step-05-review
+    type: review
+    description: >
+      Please review the story details below.  Ensure all information is accurate and complete.
+    fields:
+      - name: story_title
+        label: Story Title
+      - name: as_a
+        label: As a...
+      - name: i_want
+        label: I want...
+      - name: so_that
+        label: So that...
+      - name: acceptance_criteria
+        label: Acceptance Criteria
+      - name: story_points
+        label: Story Points
+    next: step-06-complete
+  - id: step-06-complete
+    type: completion
+    description: Story created successfully!

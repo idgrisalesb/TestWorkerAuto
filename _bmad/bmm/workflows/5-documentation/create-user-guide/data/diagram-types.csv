@@ -1,0 +1,6 @@
+content_type,diagram_type,mermaid_syntax,use_case_es,use_case_en
+feature_overview,flowchart,"flowchart LR","Mostrar componentes y relaciones","Show components and relationships"
+user_workflow,flowchart,"flowchart TD","Proceso paso a paso con decisiones","Step-by-step process with decisions"
+sequential_process,sequenceDiagram,"sequenceDiagram","Interacciones usuario-sistema","User-system interactions"
+state_changes,stateDiagram-v2,"stateDiagram-v2","Cambios de estado de datos","Data state changes"
+user_journey,journey,"journey","Experiencia del usuario","User experience across touchpoints"

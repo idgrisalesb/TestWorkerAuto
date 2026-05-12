@@ -1,0 +1,4 @@
+description = "SA Workflow: sa-skill-creator — Universal creator, editor and optimizer for Claude Code Skills"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @_siesa-agents/sa/sa-skills-creator/workflow.md, READ its entire contents and follow its directions exactly!
+"""

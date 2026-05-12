@@ -1,0 +1,5 @@
+audience_id,audience_name_es,audience_name_en,description_es,description_en,filename_prefix
+enduser,Usuarios Finales,End Users,"Usuarios que interactúan con la aplicación","Users who interact with the application",enduser-guide
+admin,Administradores,Administrators,"Usuarios que gestionan el sistema","Users who manage the system",admin-guide
+api,Consumidores de API,API Consumers,"Desarrolladores que integran con el sistema","Developers who integrate with the system",api-guide
+mixed,Audiencia Mixta,Mixed Audience,"Usuarios finales y administradores","End users and administrators",complete-guide

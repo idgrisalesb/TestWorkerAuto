@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "siesa-agents": "file:../WorkflowAuto/Siesa-Agents"
-  }
-}

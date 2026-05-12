@@ -1,0 +1,10 @@
+description = "BMAD BMM Workflow: generate-project-context"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THESE STEPS:
+
+<steps CRITICAL="TRUE">
+1. FIRST: LOAD and READ the FULL @_siesa-agents/bmm/workflows/generate-project-context/workflow_ext.md — This contains mandatory context injection rules and an interactive menu. Apply them BEFORE proceeding.
+2. AFTER the menu choices are handled: LOAD the FULL @_bmad/bmm/workflows/generate-project-context/workflow.md
+3. READ its entire contents and follow its directions exactly, making sure to apply the output file path constraints derived from STEP 1!
+</steps>
+"""

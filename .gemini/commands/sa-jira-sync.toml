@@ -1,0 +1,9 @@
+description = "SA: Query Jira and return a minimal hierarchy of Epics → Stories → Subtasks for a given project and epic status. Returns only id, key, name, and status for each level."
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @_siesa-agents/sa/sa-jira-sync-api/jira-sync-api.md, READ its entire contents and follow its directions exactly!
+
+Parse the user arguments: **$ARGUMENTS**
+- First positional arg → PROJECT_KEY (e.g. PPS)
+- --status "..." → filter epics by this status name (default: En curso)
+- If no PROJECT_KEY is provided, prompt the user for one.
+"""

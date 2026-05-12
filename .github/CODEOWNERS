@@ -1,0 +1,7 @@
+# CODEOWNERS file
+# Este archivo define quiénes son los propietarios del código y deben aprobar los cambios
+# Para más información: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Propietarios globales del repositorio
+# Todos los archivos requieren aprobación de estos usuarios
+* @gdboneth @jtoledosiesa

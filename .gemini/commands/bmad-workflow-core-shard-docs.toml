@@ -1,0 +1,4 @@
+description = "BMAD Core Workflow: shard-doc — Splits large markdown documents into smaller files based on level 2 sections."
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @_siesa-agents/core/tasks/shard-doc.md, READ its entire contents and follow its directions exactly!
+"""
