@@ -1,0 +1,10 @@
+{
+  "client_id": "TU_CLIENT_ID",
+  "client_secret": "TU_CLIENT_SECRET",
+  "redirect_uri": "http://localhost:3000/callback",
+  "scopes": "read:jira-work read:jira-user offline_access",
+  "cloud_id": "TU_CLOUD_ID",
+  "jira_base_url": "https://api.atlassian.com/ex/jira/TU_CLOUD_ID/rest/api/3",
+  "default_instance": null,
+  "default_project": null
+}

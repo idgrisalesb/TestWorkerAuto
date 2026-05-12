@@ -1,0 +1,150 @@
+name: Publish NPM Package
+
+on:
+  push:
+    branches:
+      - main      # Producción - versiones estables
+      - develop   # Desarrollo - versiones dev
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write  # Necesario para crear tags y push
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necesario para git operations
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions@siesa.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Get current version
+        id: current-version
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Versión en package.json: $CURRENT_VERSION"
+
+      - name: Publish stable release (main)
+        if: github.ref == 'refs/heads/main'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "Publicando en npm como release estable (latest)..."
+          CURRENT_VERSION=${{ steps.current-version.outputs.version }}
+          PUBLISHED_VERSION=$(npm view siesa-agents version 2>/dev/null || echo "0.0.0")
+          echo "Última versión publicada (latest): $PUBLISHED_VERSION"
+
+          # Comparar versiones usando node para determinar si necesitamos incrementar
+          NEEDS_BUMP=$(node -e "
+            const current = '$CURRENT_VERSION'.split('.').map(Number);
+            const published = '$PUBLISHED_VERSION'.split('.').map(Number);
+            for (let i = 0; i < 3; i++) {
+              if (current[i] < published[i]) { console.log('yes'); process.exit(0); }
+              if (current[i] > published[i]) { console.log('no'); process.exit(0); }
+            }
+            console.log('yes'); // Si son iguales, también incrementamos
+          ")
+
+          if [ "$NEEDS_BUMP" = "yes" ]; then
+            echo "La versión actual ($CURRENT_VERSION) es menor o igual que la publicada ($PUBLISHED_VERSION)"
+            echo "Estableciendo versión base a la publicada: $PUBLISHED_VERSION"
+            npm version $PUBLISHED_VERSION --no-git-tag-version --allow-same-version
+            echo "Incrementando versión desde $PUBLISHED_VERSION..."
+            npm version patch --no-git-tag-version
+            NEW_VERSION=$(node -p "require('./package.json').version")
+            echo "Nueva versión estable: $NEW_VERSION"
+            git add package.json
+            git commit -m "Bump version to $NEW_VERSION"
+            git tag "v$NEW_VERSION"
+          else
+            echo "Usando versión estable $CURRENT_VERSION (mayor que la publicada)"
+            NEW_VERSION=$CURRENT_VERSION
+          fi
+
+          npm run build || echo "No build script, continuing..."
+          npm publish --access public --tag latest
+
+          # Push tags y commits
+          git push origin main --tags || echo "Push failed, continuing..."
+
+      - name: Publish dev prerelease (develop)
+        if: github.ref == 'refs/heads/develop'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "Publicando en npm como prerelease (dev)..."
+
+          # Obtener la última versión estable para usar como base
+          LATEST_STABLE=$(npm view siesa-agents version 2>/dev/null || echo "0.0.0")
+          echo "Última versión estable: $LATEST_STABLE"
+
+          # Obtener la última versión dev para verificar el incremento
+          PUBLISHED_DEV_VERSION=$(npm view siesa-agents@dev version 2>/dev/null || echo "0.0.0-dev.0")
+          echo "Última versión publicada (dev): $PUBLISHED_DEV_VERSION"
+
+          # Extraer la base de la versión dev (sin -dev.X)
+          DEV_BASE=$(echo "$PUBLISHED_DEV_VERSION" | sed 's/-dev\.[0-9]*$//')
+          echo "Base de versión dev existente: $DEV_BASE"
+
+          # Comparar si la versión estable es diferente (mayor) que la base dev
+          if [ "$LATEST_STABLE" != "$DEV_BASE" ]; then
+            echo "Nueva versión estable detectada ($LATEST_STABLE vs $DEV_BASE), iniciando nueva serie dev"
+
+            # Intentar verificar si ya existe la versión .dev.0 para la nueva versión estable
+            echo "Verificando si existe $LATEST_STABLE-dev.0..."
+            EXISTING_CHECK=$(npm view siesa-agents@$LATEST_STABLE-dev.0 version 2>/dev/null || echo "")
+
+            if [ -n "$EXISTING_CHECK" ]; then
+              echo "Ya existe $LATEST_STABLE-dev.0, buscando la última versión dev de esta serie..."
+              # Si existe .dev.0, usar la versión dev actual como base y incrementar
+              npm version $PUBLISHED_DEV_VERSION --no-git-tag-version --allow-same-version
+              echo "Incrementando prerelease de desarrollo..."
+              npm version prerelease --preid=dev --no-git-tag-version
+            else
+              echo "No existe $LATEST_STABLE-dev.0, generando primera versión dev de la serie"
+              npm version "$LATEST_STABLE-dev.0" --no-git-tag-version --allow-same-version
+            fi
+          else
+            echo "Continuando serie dev existente desde: $PUBLISHED_DEV_VERSION"
+            npm version $PUBLISHED_DEV_VERSION --no-git-tag-version --allow-same-version
+            echo "Incrementando prerelease de desarrollo..."
+            npm version prerelease --preid=dev --no-git-tag-version
+          fi
+
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "Nueva versión dev: $NEW_VERSION"
+          git add package.json
+          git commit -m "Bump dev version to $NEW_VERSION"
+          git tag "v$NEW_VERSION"
+
+          npm run build || echo "No build script, continuing..."
+          npm publish --access public --tag dev
+
+          # Push tags y commits
+          git push origin develop --tags || echo "Push failed, continuing..."
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-logs
+          path: '*.log'
+          retention-days: 1
+          if-no-files-found: ignore

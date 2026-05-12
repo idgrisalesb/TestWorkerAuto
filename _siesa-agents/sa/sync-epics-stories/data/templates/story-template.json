@@ -1,0 +1,13 @@
+{
+  "provider": "jira",
+  "issueTypeName": "Story",
+  "projectKey": "{{project_key}}",
+  "summary": "Story {{Story ID}}: {{Story Name}}",
+  "description": "## User Story\n{{user_story}}\n\n## Acceptance Criteria\n{{acceptance_criteria}}\n\n## Dev Notes\n{{dev_notes}}\n\n---\n*Source: {{file_path}}*",
+  "parent": "{{Parent_Epic_Key}}",
+  "additional_fields": {
+    "priority": { "name": "Medium" },
+    "labels": ["prd-sync", "automated", "story-file-sync", "{{parent-epic-slug}}"],
+    "customfield_10014": "{{Parent_Epic_Key}}"
+  }
+}

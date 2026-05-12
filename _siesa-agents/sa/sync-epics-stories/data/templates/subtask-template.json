@@ -1,0 +1,18 @@
+{
+  "_comment": "Template for adding nested sub-task bullets as a comment on a Jira Sub-task. Uses Atlassian Document Format (ADF) required by Jira Cloud REST API v3.",
+  "body": {
+    "type": "doc",
+    "version": 1,
+    "content": [
+      {
+        "type": "heading",
+        "attrs": { "level": 3 },
+        "content": [{ "type": "text", "text": "Sub-tasks" }]
+      },
+      {
+        "type": "bulletList",
+        "content": "{{nested_bullets_adf_list_items}}"
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "provider": "jira",
+  "issueTypeName": "Sub-task",
+  "projectKey": "{{project_key}}",
+  "parent": "{{Parent_Story_Key}}",
+  "summary": "{{Story ID}} - {{Task Name}}"
+}

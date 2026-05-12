@@ -1,0 +1,8 @@
+description = "BMAD BMM Workflow: create-epics-and-stories"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND:
+
+1. FIRST: LOAD and READ the FULL @_siesa-agents/bmm/workflows/3-solutioning/create-epics-and-stories/workflow_ext.md — This contains mandatory pre-workflow context injection rules. Execute its steps BEFORE proceeding.
+
+2. THEN: LOAD the FULL @_bmad/bmm/workflows/3-solutioning/create-epics-and-stories/workflow.md, READ its entire contents and follow its directions exactly, applying the context injected in step 1 throughout the entire workflow execution.
+"""

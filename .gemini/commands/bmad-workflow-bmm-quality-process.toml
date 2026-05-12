@@ -1,0 +1,4 @@
+description = "BMAD BMM Workflow: quality — QA Quality Process (Phase 1 Planning or Phase 2 Design)"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @_siesa-agents/bmm/workflows/3-solutioning/quality-process/workflow.md, READ its entire contents and follow its directions exactly!
+"""

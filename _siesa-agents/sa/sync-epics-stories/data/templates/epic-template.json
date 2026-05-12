@@ -1,0 +1,13 @@
+{
+  "provider": "jira",
+  "issueTypeName": "Epic",
+  "projectKey": "{{project_key}}",
+  "parent": "{{Parent_Key}}",
+  "summary": "Epic {{Epic Number}}: {{Epic Name}}",
+  "description": "## Epic Goal\n{{goal}}\n\n## Details\n{{description}}\n\n---\n*Source: {{file_path}}*",
+  "additional_fields": {
+    "priority": { "name": "Medium" },
+    "labels": ["prd-sync", "automated", "epic-file-sync", "{{epic-slug}}"],
+    "customfield_10011": "Epic {{Epic Number}}: {{Epic Name}}"
+  }
+}

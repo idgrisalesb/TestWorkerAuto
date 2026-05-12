@@ -1,0 +1,4 @@
+description = "BMAD BMM Workflow: create-user-guide"
+prompt = """
+IT IS CRITICAL THAT YOU FOLLOW THIS COMMAND: LOAD the FULL @_bmad/bmm/workflows/5-documentation/create-user-guide/workflow.md, READ its entire contents and follow its directions exactly!
+"""

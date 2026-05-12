@@ -1,0 +1,10 @@
+section_id,section_name_es,section_name_en,description,required
+1,Introducción,Introduction,"What is the product, who is this guide for, how to use it",true
+2,Primeros Pasos,Getting Started,"Prerequisites, setup, accessing system, interface overview",true
+3,Conceptos Clave,Core Concepts,"Key terminology, main concepts, user roles",true
+4,Funcionalidades,Features and How to Use Them,"Feature descriptions with diagrams and screenshots",true
+5,Flujos de Trabajo,Common Workflows,"Step-by-step workflows with diagrams",true
+6,Solución de Problemas,Troubleshooting,"Common issues and solutions",false
+7,Preguntas Frecuentes,FAQ,"Frequently asked questions",true
+8,Glosario,Glossary,"Terms and definitions",true
+9,Índice de Capturas,Screenshot Index,"Table of all screenshot placeholders",true
