@@ -135,14 +135,15 @@ async function runCountdown(db, jobId, runId, resetTs) {
  * @param {import('better-sqlite3').Database} opts.db
  * @param {object} opts.job             - Row from jobs table
  * @param {Array}  opts.patterns        - Compiled rate-limit patterns
- * @param {string} opts.sessionId       - UUID for --session-id
+ * @param {string} opts.sessionId       - UUID for session management
+ * @param {boolean} [opts.sessionIsNew] - true → use --session-id (new session); false → use --resume
  * @param {string} [opts.claudeBin]     - Path or command for claude CLI (null = resolve via PATH)
  * @param {string} opts.effectiveModel  - Resolved model name (from resolveModel)
  * @param {object} opts.policy          - Loaded model-policy.json object
  * @param {string} [opts.rawLogPath]    - Current log file path (persisted in runs.raw_log_path)
  * @returns {Promise<WorkerResult>}
  */
-async function runWorker({ db, job, patterns, sessionId, claudeBin, effectiveModel, policy, rawLogPath }) {
+async function runWorker({ db, job, patterns, sessionId, sessionIsNew = true, claudeBin, effectiveModel, policy, rawLogPath }) {
   const startTs  = Date.now();
   const nowSec   = () => Math.floor(Date.now() / 1000);
 
@@ -227,7 +228,13 @@ async function runWorker({ db, job, patterns, sessionId, claudeBin, effectiveMod
   }
 
   if (sessionId) {
-    claudeArgs.push('--session-id', sessionId);
+    if (sessionIsNew) {
+      // New session: assign the pre-generated UUID so subsequent jobs can --resume it
+      claudeArgs.push('--session-id', sessionId);
+    } else {
+      // Existing session: resume conversation context (avoids "already in use" error)
+      claudeArgs.push('--resume', sessionId);
+    }
   }
 
   if (effectiveModel) {

@@ -19,10 +19,36 @@ const { spawn } = require('node:child_process');
 
 const QUEUE_HOME      = process.env.SIESA_QUEUE_HOME || path.join(os.homedir(), '.siesa-queue');
 const DISPATCHER_PATH = path.join(__dirname, '../../runtime/dispatcher.js');
+const STALE_S         = parseInt(process.env.SIESA_QUEUE_HEARTBEAT_STALE_S || '180', 10);
+
+/**
+ * Returns true if a live daemon is already registered in the heartbeat table.
+ */
+function isLiveDaemonRunning() {
+  const dbPath = path.join(QUEUE_HOME, 'queue.db');
+  if (!fs.existsSync(dbPath)) return false;
+  try {
+    const { openDb } = require('../../lib/db');
+    const db  = openDb(dbPath);
+    const row = db.prepare('SELECT pid, last_beat_ts FROM daemon_heartbeat WHERE id=1').get();
+    db.close();
+    if (!row) return false;
+    const age = Math.floor(Date.now() / 1000) - row.last_beat_ts;
+    if (age > STALE_S) return false;
+    // Verify the process is actually alive
+    try { process.kill(row.pid, 0); return true; } catch { return false; }
+  } catch { return false; }
+}
 
 async function handler(argv) {
   // Ensure queue home exists
   fs.mkdirSync(QUEUE_HOME, { recursive: true });
+
+  // Guard against duplicate daemons
+  if (isLiveDaemonRunning()) {
+    console.error('A dispatcher is already running (heartbeat is fresh). Use `queue health` to inspect.');
+    process.exit(1);
+  }
 
   // Apply CLI options to env before loading dispatcher
   if (argv.verbose) {

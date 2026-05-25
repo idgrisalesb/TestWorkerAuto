@@ -22,33 +22,42 @@ function nowSec() {
 /**
  * Resolve or create a session UUID for a job.
  *
+ * Session key = (correlation_key + job.type) so each job type within a
+ * correlation group gets its own independent session. This prevents context
+ * overflow when sequential jobs (create-story → dev-story → code-review) share
+ * a single conversation thread that grows beyond the model's context window.
+ *
  * - If job.correlation_key is null/undefined: returns a new random UUID without
  *   touching the sessions table (no persistence).
- * - If correlation_key exists in sessions: updates last_used_at + invocations,
- *   returns the existing session_id.
- * - Otherwise: inserts a new row with a fresh UUID and returns it.
+ * - If (correlation_key, type) already in sessions: updates last_used_at +
+ *   invocations and returns the existing session_id (isNew=false → use --resume).
+ * - Otherwise: inserts a new row and returns fresh UUID (isNew=true → use --session-id).
  *
- * @param {object} job - Row from jobs table (must have .correlation_key)
+ * @param {object} job - Row from jobs table (must have .correlation_key and .type)
  * @param {import('better-sqlite3').Database} db
- * @returns {string} session UUID
+ * @returns {{ sessionId: string, isNew: boolean }}
  */
 function resolveSessionId(job, db) {
   if (!job.correlation_key) {
     return { sessionId: crypto.randomUUID(), isNew: true };
   }
 
+  // Scope session to (correlation_key, job_type) to prevent context overflow
+  // across different workflow phases (create-story, dev-story, code-review).
+  const sessionKey = job.type ? `${job.correlation_key}:${job.type}` : job.correlation_key;
+
   const now = nowSec();
 
   const row = db
     .prepare('SELECT session_id FROM sessions WHERE correlation_key = ?')
-    .get(job.correlation_key);
+    .get(sessionKey);
 
   if (row) {
     db.prepare(`
       UPDATE sessions
       SET last_used_at = ?, invocations = invocations + 1
       WHERE correlation_key = ?
-    `).run(now, job.correlation_key);
+    `).run(now, sessionKey);
     return { sessionId: row.session_id, isNew: false };
   }
 
@@ -56,7 +65,7 @@ function resolveSessionId(job, db) {
   db.prepare(`
     INSERT INTO sessions (correlation_key, session_id, created_at, last_used_at, invocations)
     VALUES (?, ?, ?, ?, 1)
-  `).run(job.correlation_key, id, now, now);
+  `).run(sessionKey, id, now, now);
   return { sessionId: id, isNew: true };
 }
 

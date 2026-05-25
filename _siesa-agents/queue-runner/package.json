@@ -1,0 +1,14 @@
+{
+  "name": "queue-runner",
+  "version": "1.0.0",
+  "description": "Queue runner for long-running jobs with kill recovery",
+  "main": "lib/dispatcher.js",
+  "scripts": {
+    "test": "node tests/kill-recovery.test.js",
+    "start": "node lib/dispatcher.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.2.2"
+  },
+  "devDependencies": {}
+}

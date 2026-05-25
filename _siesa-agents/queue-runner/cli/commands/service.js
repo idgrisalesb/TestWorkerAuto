@@ -23,9 +23,9 @@ function loadInstaller() {
   }
 
   const platformMap = {
-    linux:  '../../../lib/installers/linux',
-    darwin: '../../../lib/installers/macos',
-    win32:  '../../../lib/installers/windows',
+    linux:  '../../lib/installers/linux',
+    darwin: '../../lib/installers/macos',
+    win32:  '../../lib/installers/windows',
   };
 
   return require(platformMap[platform]);

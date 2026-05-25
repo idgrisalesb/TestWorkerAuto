@@ -21,7 +21,7 @@ async function handler(argv) {
     .prepare(`
       SELECT model, SUM(cost_usd) AS total
       FROM cost_ledger
-      WHERE date(ts, 'unixepoch') = date('now', 'utc')
+      WHERE date(ts, 'unixepoch') = date('now')
       GROUP BY model
       ORDER BY model
     `)

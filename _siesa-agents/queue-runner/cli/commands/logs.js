@@ -92,10 +92,11 @@ async function handler(argv) {
   if (argv.job != null) {
     const db   = openDb(path.join(queueHome, 'queue.db'));
     const rows = db.prepare(`
-      SELECT e.ts, e.event, e.payload_json, r.attempt_number
+      SELECT e.ts, e.level, e.event, e.payload,
+             r.attempt_number
       FROM events e
-      JOIN runs r ON e.run_id = r.id
-      WHERE r.job_id = ?
+      LEFT JOIN runs r ON e.run_id = r.id
+      WHERE e.job_id = ?
       ORDER BY e.id
     `).all(argv.job);
     db.close();
@@ -106,8 +107,14 @@ async function handler(argv) {
     }
     for (const row of rows) {
       let payload = {};
-      try { payload = JSON.parse(row.payload_json || '{}'); } catch {}
-      const f = formatLine(JSON.stringify({ ts: row.ts, level: 'info', event: row.event, attempt: row.attempt_number, ...payload }));
+      try { payload = JSON.parse(row.payload || '{}'); } catch {}
+      const f = formatLine(JSON.stringify({
+        ts: row.ts,
+        level: row.level || 'info',
+        event: row.event,
+        ...(row.attempt_number != null ? { attempt: row.attempt_number } : {}),
+        ...payload,
+      }));
       if (f) console.log(f);
     }
     return;

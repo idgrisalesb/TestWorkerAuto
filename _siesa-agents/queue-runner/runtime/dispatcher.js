@@ -130,7 +130,7 @@ function checkBudget() {
   try {
     const row = db.prepare(`
       SELECT COALESCE(SUM(cost_usd), 0) AS total FROM cost_ledger
-      WHERE date(ts, 'unixepoch') = date('now', 'utc')
+      WHERE date(ts, 'unixepoch') = date('now')
     `).get();
     if (row && row.total >= policy.daily_budget_usd) {
       setPaused(true, 'budget');
@@ -160,7 +160,7 @@ function checkDayChange() {
   try {
     const row = db.prepare(`
       SELECT COALESCE(SUM(cost_usd), 0) AS total FROM cost_ledger
-      WHERE date(ts, 'unixepoch') = date('now', 'utc')
+      WHERE date(ts, 'unixepoch') = date('now')
     `).get();
     if (row && row.total === 0) {
       setPaused(false, 'budget_reset');
@@ -469,7 +469,7 @@ async function tick() {
     wakeLock.acquire(process.pid);
   }
 
-  const { sessionId }  = resolveSessionId(job, db);
+  const { sessionId, isNew: sessionIsNew } = resolveSessionId(job, db);
   const effectiveModel = resolveModel(job, policy);
   const now            = nowSec();
 
@@ -484,7 +484,9 @@ async function tick() {
   bridge && bridge.emit('job.start', job, sessionId);
 
   // Run worker (non-blocking)
-  runWorker({ db, job, patterns, sessionId, claudeBin: CLAUDE_BIN, effectiveModel, policy, rawLogPath })
+  // sessionIsNew=true → pass --session-id (start fresh with that UUID)
+  // sessionIsNew=false → pass --resume (continue existing conversation)
+  runWorker({ db, job, patterns, sessionId, sessionIsNew, claudeBin: CLAUDE_BIN, effectiveModel, policy, rawLogPath })
     .then((result) => {
       inFlight--;
       // Release wake-lock when last in-flight job completes (inFlight: 1 → 0)

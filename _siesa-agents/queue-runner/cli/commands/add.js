@@ -156,6 +156,7 @@ async function handler(argv) {
       type: 'custom',
       prompt: argv.prompt,
       ...(tools ? { allowedTools: tools } : {}),
+      ...(argv.unsafe ? { unsafe: true } : {}),
     };
     const fp = fingerprint(payload);
     const job = {
@@ -218,7 +219,9 @@ async function handler(argv) {
 
   db.close();
 
-  if (skipped > 0 && inserted === 0) {
+  if (inserted === 0 && skipped === 0) {
+    console.log('0 jobs nuevos (ninguna historia ready-for-dev/in-progress encontrada).');
+  } else if (skipped > 0 && inserted === 0) {
     console.log(`0 jobs nuevos (idempotencia): ${skipped} job(s) ya existían con el mismo fingerprint. Use --force para sobrescribir.`);
   } else {
     if (inserted > 0) console.log(`${inserted} job(s) añadidos en estado pending.`);
@@ -244,6 +247,7 @@ module.exports = {
       .option('sprint-path',       { type: 'string',  description: 'Custom path to sprint-status.yaml' })
       .option('depends-on-epics',  { type: 'string',  description: 'Comma-separated epic numbers that must be done before this job runs (e.g. "1,2")' })
       .option('force',             { type: 'boolean', description: 'Replace existing jobs with same fingerprint', default: false })
-      .option('correlation-key',   { type: 'string',  description: 'Explicit correlation key for custom jobs' }),
+      .option('correlation-key',   { type: 'string',  description: 'Explicit correlation key for custom jobs' })
+      .option('unsafe',            { type: 'boolean', description: 'Grant full tool permissions for --custom jobs (skips allowedTools whitelist)', default: false }),
   handler,
 };
